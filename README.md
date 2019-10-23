@@ -4,7 +4,7 @@ Dynamic Loop Self-scheduling For Load Balancing (DLS4LB) is an MPI-Based load ba
 DLS4LB library is based on the DLB_tool developed by Ricolindo L. Carino (rlc@erc.msstate.edu) and Ioana Banicescu (ioana@cse.msstate.edu), see publication [1].
 It is modified and extended by Ali Mohammed (ali.mohammed@unibas.ch) to support more scheduling techniques and some bug fixes, see publication [2].
 Also, DLS4LB is extended to support Simulation assisted scheduling Algorithm Selection (SimAS) as the fifteen DLS technique. 
-That is, the most efficient DLS technnique will be selected dynamically during execution based on simulation results. Plase read publication [2] for more details.
+That is, the most efficient DLS technique will be selected dynamically during execution based on simulation results. Please read publication [2] for more details.
 
 The DLS4LB parallelizes and load balances scientific applications that contain simple parallel loops (1D loops) or nested parallel loops (2D loops). The tool employs a master-worker model where workers request work from the master whenever they become free. The master serves work requests and assigns workers chunks of loop iterations according to the selected DLS technique. The master also doubles as a worker and executes chunks of loop iterations when it is not serving any requests.
 
