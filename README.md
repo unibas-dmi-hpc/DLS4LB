@@ -172,29 +172,10 @@ Type I
       "iInfo" respectively. Graphically:
 
 
-  ==============================================
-  = MPI_COMM_WORLD        .-------------.      =           
-  =    .-----------.       \  x  x   x /       =      
-  =     \ iComm x /         \ iComm   /        =      
-  =      \x  x x /           \     x /         =      
-  =       \ x   /             \x x  /          =      
-  =   .----\---/---------------\---/------.    =
-  =   |     \x/     coordinator \x/       |    =
-  =   |      .          x        .        |    =
-  =   |           .                 .     |    =
-  =   | jComm    /x\               /x\    |    =
-  =   .---------/---\-------------/---\---.    =
-  =            /iComm\           / x   \       =           
-  =           / x  x  \         / x  x  \      =           
-  =          -----------       / iComm x \     =           
-  =                           .-----------.    =           
-  ==============================================
-
-  The symbol "x" denotes a processor, "x"s inside
-  a triangle make up an "iComm", while "x"s inside
-  the rectangle make up the jComm. The j-iterates 
-  scheduled in "jComm" while the i-iterates for a
-  given j-iterate are scheduled in "iComm"
+ Authors:
+ =======
+Ricolindo L. Carino
+Ali Mohammed
 
 Publications:
 ============
