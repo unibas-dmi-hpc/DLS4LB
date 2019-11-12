@@ -174,9 +174,11 @@ Type I
 
  Authors:
  =======
-Ricolindo L. Carino
+[1] Ricolindo L. Carino
 
-Ali Mohammed
+[2] Ali Mohammed
+
+[3] Florina M. Ciorba
 
 Publications:
 ============
