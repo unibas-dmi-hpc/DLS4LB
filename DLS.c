@@ -24,7 +24,7 @@ int DLS_MethodCount = 13;
 
 char *DLS_ShortName [] = {
      "STATIC", "SS", "FSC", "GSS", "TSS","FAC", "WF",
-     "AWF-B", "AWF-C", "AWF-D", "AWF-E", "AF", "mFSC", "SiL"
+     "AWF-B", "AWF-C", "AWF-D", "AWF-E", "AF", "mFSC", "SimAS"
      };
 
 char *DLS_LongName [] = {
@@ -33,7 +33,7 @@ char *DLS_LongName [] = {
      "FIXED SIZE-SCHEDULING",  "GUIDED SELF-SCHEDULING",
      "Trapezoid Self-Scheduling","FACTORING",              "WEIGHTED FACTORING",
      "BATCH AWF",              "CHUNK AWF",
-     "BATCH AWF (chunk times)" ,"CHUNK AWF (chunk times)", "ADAPTIVE FACTORING", "MODIFIED FSC", "Simulator in the Loop"
+     "BATCH AWF (chunk times)" ,"CHUNK AWF (chunk times)", "ADAPTIVE FACTORING", "MODIFIED FSC", "Simulation-assisted"
      };
 
 

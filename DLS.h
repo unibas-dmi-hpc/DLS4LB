@@ -44,7 +44,7 @@
 #define AWF_E   10
 #define AF      11
 #define mFSC    12
-#define SiL     13
+#define SimAS   13
 
 
 
