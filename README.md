@@ -180,5 +180,9 @@ Ali Mohammed
 
 Publications:
 ============
-[1] Ricolindo L. Cariño and Ioana Banicescu. A Tool for a Two- level Dynamic Load Balancing Strategy in Scientific Applica- tions. Scalable Computing: Practice and Experience, 8(3), 2007.
+[1] Ali Mohammed, Ahmed Eleliemy, Florina M. Ciorba, Franziska Kasielke, Ioana Banicescu, “An Approach for Realistically Simulating the Performance of Scientific Applications on High Performance Computing Systems”, Future Generation Computer Systems (FGCS), 2019, https://doi.org/10.1016/j.future.2019.10.007 (Open Access)
+
 [2] Ali Mohammed and Florina M. Ciorba. Research Report - University of Basel, Switzerland. https://drive.switch.ch/index.php/s/imo0kyLe3PmETWL. [Online; accessed 20 May 2019]. October 2018.
+
+[3] Ricolindo L. Cariño and Ioana Banicescu. A Tool for a Two-level Dynamic Load Balancing Strategy in Scientific Applications. Scalable Computing: Practice and Experience, 8(3), 2007.
+
