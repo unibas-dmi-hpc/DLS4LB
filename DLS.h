@@ -34,17 +34,18 @@
 #define STATIC  0
 #define SS      1
 #define FSC     2
-#define GSS     3
-#define TSS     4
-#define FAC     5
-#define WF      6
-#define AWF_B   7
-#define AWF_C   8
-#define AWF_D   9
-#define AWF_E   10
-#define AF      11
-#define mFSC    12
-#define SimAS   13
+#define mFSC    3
+#define GSS     4
+#define TSS     5
+#define FAC     6
+#define WF      7
+#define AWF     8
+#define AWF_B   9
+#define AWF_C   10
+#define AWF_D   11
+#define AWF_E   12
+#define AF      13
+#define SimAS   14
 
 
 
@@ -70,6 +71,7 @@ typedef struct
   double *weights;
   int TSSchunk;
   int TSSdelta;
+  int timeStep;
 //  int chunkMap[3*maxChunks];
   } infoDLS;
 
@@ -84,5 +86,6 @@ int  DLS_Terminated ( infoDLS *);
 void DLS_StartChunk (infoDLS *, int *, int *);
 void DLS_EndChunk ( infoDLS *);
 void DLS_EndLoop (infoDLS *, int *, double *);
-
+void DLS_Finalize (infoDLS *info);
+void SetBreaks(infoDLS *info);
 #endif 
