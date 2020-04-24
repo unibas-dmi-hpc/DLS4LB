@@ -1,0 +1,5 @@
+*.c linguist-detectable=true
+*.h linguist-detectable=true
+*.F90 linguist-detectable=true
+*.hpp linguist-detectable=true
+*.cpp linguist-detectable=true
