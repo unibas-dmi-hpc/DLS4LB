@@ -8,20 +8,31 @@
 ********************************************************************************/
 
 #include "SchedulingActor.hpp"
-#include "Chunk.hpp"
+#include "mpi.h"
 
-class Master: SchedulingActor
+class Master : SchedulingActor
 {
 
 int rank;
-double mu; //mean execution time
-double sigma; //standard deviation of execution time
-double weight; //relative weight
+int nWorkers; //number of workers
+MPI_Comm commWorld; // MPI comm 
+int probFrequency; //how often master check for requests
+DLS *schMethod;
+Loop *parLoop;
 
-
-int calculateChunk();
 
 public:
-   Master(int rank);
-   Master(int rank, double weight);
+   int totExeIters; //total executed iterations
+   int totExeTime; //total execution time
+   Master(int rank=0, int commSize=1, MPI_Comm comm=MPI_COMM_WORLD,int probFrequency=10);
+   /* Should be called before the start of the loop, master needs to know loop properities, DLS method, 
+     minChunkSize, TSSChunkSize, and Scheduling overhead */ 
+   void startLoop(DLS *method, int probFrequency, Loop *cLoop);
+   Chunk startChunk();
+   void endChunk();
+   void endLoop();
+   void finalize();
+
+   ~Master();
 };
+

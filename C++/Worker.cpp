@@ -6,41 +6,36 @@
 * under the terms of the license (GNU LGPL) which comes with this package.      *
 ********************************************************************************/
 
-#include "Worker"
+#include "Worker.hpp"
 
 
-class Worker : SchedulingActor
+ 
+Worker::Worker(int rank, MPI_Comm comm)
 {
+    this->rank = rank;
+    commWorld = comm;
+    
+}
 
-    public: 
-        Worker(int id)
-        {
-          rank = id; //set rank own id
-        }
-      
-        Worker(int id, double relWeight)
-        {
-          rank = id;
-          weight = relWeight;
-        }
 
-        void startLoop(int Nitrs, int SchMethod)
-        {
-        }
+void Worker::startLoop(DLS *method, int requestWhen, Loop *cLoop)
+{
+ schMethod = method;
+this->requestWhen = requestWhen;
+}
 
-	Chunk startChunk()
-        {
-        }
-	void endChunk()
-        {
-        }
+Chunk Worker::startChunk()
+{}
+
+void Worker::endChunk()
+{}
 	
-        void endLoop()
-        {
-        }
+void Worker::endLoop()
+{}
 	
-        void finalize()
-        {
-        }
-  
-};
+void Worker::finalize()
+{}
+
+Worker::~Worker()
+{
+}  

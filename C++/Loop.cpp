@@ -1,3 +1,5 @@
+#include "Loop.hpp"
+
 /********************************************************************************
 * Ali Mohammed <ali.mohammed@unibas.ch>                                         *
 * University of Basel, Switzerland                                              *
@@ -6,37 +8,24 @@
 * under the terms of the license (GNU LGPL) which comes with this package.      *
 ********************************************************************************/
 
-#include "Master.hpp"
-
- 
-Master::Master(int rank, int commSize, MPI_Comm comm,int probFrequency)
+Loop::Loop(int numIters)
 {
-    this->rank = rank;
-    nWorkers = commSize;
-    commWorld = comm;
-    this->probFrequency = probFrequency; 
+    N = numIters;
+    remainingIters = N;
+    availableIters = new int[N]; 
 }
 
-Master::~Master()
-{}
-
-
-void Master::startLoop(DLS *method, int probFrequency, Loop *cLoop)
+Loop::Loop(int numIters, double mu, double sigma)
 {
-    parLoop = cLoop;
-    schMethod = method;
-    this->probFrequency = probFrequency;
+    meanItersExeTime = mu;
+    stdItersExeTime = sigma;
+    N= numIters;
 }
+         
 
-Chunk Master::startChunk()
-{}
-
-void Master::endChunk()
-{}
-	
-void Master::endLoop()
-{}
-	
-void Master::finalize()
-{}
+Loop::~Loop()
+{
+   delete [] availableIters;  
+   availableIters = nullptr;
+}
   
