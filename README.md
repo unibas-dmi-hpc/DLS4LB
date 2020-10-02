@@ -176,9 +176,11 @@ Type I
  =======
 [1] Ricolindo L. Carino
 
-[2] Ali Mohammed
+[2] Ioana Banicescu
 
-[3] Florina M. Ciorba
+[3] Ali Mohammed
+
+[4] Florina M. Ciorba
 
 Publications:
 ============
