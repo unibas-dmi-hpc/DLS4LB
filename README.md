@@ -1,10 +1,14 @@
 # DLS4LB
 Dynamic Loop Self-scheduling For Load Balancing (DLS4LB) is an MPI-Based load balancing library. It is implemented in C and FORTRAN (F90) programming languages to support scientific applications executed on High Performance Computing (HPC) systems.
 
-DLS4LB library is based on the DLB_tool developed by Ricolindo L. Carino (rlc@erc.msstate.edu) and Ioana Banicescu (ioana@cse.msstate.edu), see publication [1].
-It is modified and extended by Ali Mohammed (ali.mohammed@unibas.ch) to support more scheduling techniques and some bug fixes, see publication [2].
-Also, DLS4LB is extended to support Simulation assisted scheduling Algorithm Selection (SimAS) as the fifteen DLS technique. 
+DLS4LB used reproduction as a means for the verification of the implementation of the scheduling techniques in the library [1]. 
+Therefore, scheduling techniques implemented in DLS4LB conform to their original implementation as published decades ago.
+DLS4LB is developed by Ali Mohammed (ali.mohammed@unibas.ch) and Florina M. Ciorba (florina.ciorba@unibas.ch)
+It includes 14 scheduling techniques and support for Simulation-assisted scheduling Algorithm Selection (SimAS) as the fifteen DLS technique [2].
 That is, the most efficient DLS technique will be selected dynamically during execution based on simulation results. Please read publication [2] for more details.
+
+DLS4LB library is based on the DLB_tool developed by Ricolindo L. Carino (rlc@erc.msstate.edu) and Ioana Banicescu (ioana@cse.msstate.edu), see publication [3].
+It is modified and extended by Ali Mohammed (ali.mohammed@unibas.ch) to support more scheduling techniques and some bug fixes, see publication [1].
 
 The DLS4LB parallelizes and load balances scientific applications that contain simple parallel loops (1D loops) or nested parallel loops (2D loops). The tool employs a master-worker model where workers request work from the master whenever they become free. The master serves work requests and assigns workers chunks of loop iterations according to the selected DLS technique. The master also doubles as a worker and executes chunks of loop iterations when it is not serving any requests.
 
@@ -174,19 +178,20 @@ Type I
 
  Authors:
  =======
-[1] Ricolindo L. Carino
+[1] Ali Mohammed
 
-[2] Ioana Banicescu
+[2] Florina M. Ciorba
 
-[3] Ali Mohammed
+[3] Ricolindo L. Carino
 
-[4] Florina M. Ciorba
+[4] Ioana Banicescu
+
 
 Publications:
 ============
 [1] Ali Mohammed, Ahmed Eleliemy, Florina M. Ciorba, Franziska Kasielke, Ioana Banicescu, “An Approach for Realistically Simulating the Performance of Scientific Applications on High Performance Computing Systems”, Future Generation Computer Systems (FGCS), 2019, https://doi.org/10.1016/j.future.2019.10.007 (Open Access)
 
-[2] Ali Mohammed and Florina M. Ciorba. Research Report - University of Basel, Switzerland. https://drive.switch.ch/index.php/s/imo0kyLe3PmETWL. [Online; accessed 20 May 2019]. October 2018.
+[2]  Ali Mohammed and Florina M. Ciorba, “SimAS: A simulation-assisted approach for the scheduling algorithm selection under perturbations”, In Concurrency and Computation: Practice and Experience (CPE), 2020, https://onlinelibrary.wiley.com /doi/full/10.1002/cpe.5648 (Open Access)
 
 [3] Ricolindo L. Cariño and Ioana Banicescu. A Tool for a Two-level Dynamic Load Balancing Strategy in Scientific Applications. Scalable Computing: Practice and Experience, 8(3), 2007.
 
