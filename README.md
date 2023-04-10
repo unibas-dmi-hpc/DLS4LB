@@ -1,197 +1,22 @@
-# DLS4LB
-Dynamic Loop Self-scheduling For Load Balancing (DLS4LB) is an MPI-Based load balancing library. It is implemented in C and FORTRAN (F90) programming languages to support scientific applications executed on High Performance Computing (HPC) systems.
-
-DLS4LB used reproduction as a means for the verification of the implementation of the scheduling techniques in the library [1]. 
-Therefore, scheduling techniques implemented in DLS4LB conform to their original implementation as published decades ago.
-DLS4LB is developed by Ali Mohammed (ali.mohammed@unibas.ch) and Florina M. Ciorba (florina.ciorba@unibas.ch)
-It includes 14 scheduling techniques and support for Simulation-assisted scheduling Algorithm Selection (SimAS) as the fifteen DLS technique [2].
-That is, the most efficient DLS technique will be selected dynamically during execution based on simulation results. Please read publication [2] for more details.
-
-DLS4LB library is based on the DLB_tool developed by Ricolindo L. Carino (rlc@erc.msstate.edu) and Ioana Banicescu (ioana@cse.msstate.edu), see publication [3].
-It is modified and extended by Ali Mohammed (ali.mohammed@unibas.ch) to support more scheduling techniques and some bug fixes, see publication [1].
-
-The DLS4LB parallelizes and load balances scientific applications that contain simple parallel loops (1D loops) or nested parallel loops (2D loops). The tool employs a master-worker model where workers request work from the master whenever they become free. The master serves work requests and assigns workers chunks of loop iterations according to the selected DLS technique. The master also doubles as a worker and executes chunks of loop iterations when it is not serving any requests.
-
-
-The DLS4LB library supports fourteen scheduling techniques:
-  1.  Straightforward static scheduluing (STATIC)
-  2.  Self Scheduling (SS)
-  3.  Fixed size chunk (FSC)
-  4.  Modified fixed size chhunk (mFSC)
-  5.  Guided self-scheduling (GSS) 
-  6.  Trapezoid self-scheduling (TSS)
-  7.  Factoring (FAC)
-  8.  Weighted factoring (WF)
-  9.  Adaptive weighted factoring (AWF)
-  10. Adaptive weighted factoring - Batch (AWF-B)
-  11. Adaptive weighted factoring - Chunk (AWF-C)
-  12. Adaptive weighted factoring - Batch with scheduling overhead (AWF-D)
-  13. Adaptive weighted factoring - Chunk with scheduling overhead (AWF-E)
-  14. Adaptive factoring (AF)
-  
- 
-The DLS4LB is designed to load balance scientific applications with minimum code changes. Below is a simple example on how to use the DLS4LB tool for simple 1D loops (Type I) and nested 2D loops (Type II).
-  
-Type I
-   ! begin i-loop
-   do i=1,N
-     ... i-iterate
-   end do
-   ! end i-loop
-
-
- Type II
-   ! begin j-loop
-   do j=1,M
-     ... part of j-iterate
-     ! begin i-loop
-     do i=1,N(j)
-     ... i-iterate of j-iterate
-     end do
-     ! end i-loop
-     ... part of j-iterate
-   end do
-   ! end j-loop
-
- Dynamic load balancing is achieved in the application
- by invoking DLS routines to manipulate the loop indices.
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
- For Type I loops, the application must be modified as:
-
-   use DLS
-   include 'mpif.h'
-   ...
-   type (infoDLS) info
-   integer method, iStart, iSize
-   integer iIters
-   double precision iTime
-   ...
-   method = ... (choice of loop scheduling technique)
-   call DLS_Setup (MPI_COMM_WORLD, info)
-   call DLS_StartLoop (info, 1, N, method)
-   do while ( .not. DLS_Terminated(info) )
-     call DLS_StartChunk (info, iStart, iSize)
-     ! begin i-loop, new extents
-     do i=iStart, iStart+iSize-1    ! 1,N
-       ... i-iterate
-     end do
-     ! end i-loop
-     call DLS_EndChunk (info)
-   end do ! while ( .not. DLS_Terminated(info) )
-   call DLS_EndLoop (info, iIters, iTime)
-
-
- where:
-
-   DLS_Setup (MPI_COMM_WORLD, info)
-      Initializes a dynamic load balancing environment on
-      MPI_COMM_WORLD. Information about this environment is
-      stored in "info" (see type declaration infoDLS below)
-
-   DLS_StartLoop (info, 1, N, method)
-      The synchronization point to start loop execution.
-      (1, N) is the loop range, and "method" is a user-
-      specified index [1..9] for the loop scheduling method
-      (see array DLS_LongName() below)
-
-   DLS_Terminated(info) 
-      returns .TRUE. if all loop iterates have been
-      executed
-
-   DLS_StartChunk (info, iStart, iSize)
-      Returns a range for a chunk of iterates, starting
-      at "iStart", with size "iSize"
-
-   do i=iStart, iStart+iSize-1    ! 1,N
-     ... i-iterate
-   end do
-      The original "serial" code, but now executing
-      a chunk of iterates instead of "i=1,N"
-
-   DLS_EndChunk (info)
-      Indicates the end of execution of a chunk of iterates
-
-   DLS_EndLoop (info, iIters, iTime)
-      The synchronization point to end loop execution. 
-      "iIters" is the number of iterates done by the calling
-      processor, and "iTime" is its cost (in seconds)
-      
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
- For Type II loops, the application must be modified as:
-
-   use DLS
-   include 'mpif.h'
-   ...
-   type (infoDLS) iInfo, jInfo
-   integer iComm, jComm    ! communicators
-   integer iMethod, iStart, iSize, jMethod, jStart, jSize
-   integer iIters, jIters
-   double precision iTime, jTime
-   integer coordinator
-   ...
-   iMethod = ... (choice of loop scheduling technique)
-   jMethod = ... (choice of loop scheduling technique)
-   coordinator = 0
-   call DLS_GroupSetup (MPI_COMM_WORLD, coordinator, jInfo, iInfo)
-   call DLS_StartLoop (jInfo, 1, M, jMethod)
-   do while ( .not. DLS_Terminated(jInfo) )
-     call DLS_StartChunk (jInfo, jStart, jSize)
-
-   ! begin j-loop code, new extents
-     do j=jStart, jStart+jSjze-1    ! 1,M
-       ... part of j-iterate 
-
-   call DLS_StartLoop (iInfo, 1, N(j), iMethod)
-       do while ( .not. DLS_Terminated(iInfo) )
-         call DLS_StartChunk (iInfo, iStart, iSize)
-         ! begin i-loop, new extents
-         do i=iStart, iStart+iSize-1    ! 1,N
-           ... i-iterate of j-iterate
-         end do
-       end i-loop
-       call DLS_EndChunk (iInfo)
-      end do ! while ( .not. DLS_Terminated(iInfo) )
-      call DLS_EndLoop (iInfo, iIters, iTime)
-
-   ... part of j-iterate 
-     end do
-   ! end j-loop
-
-  call DLS_EndChunk (jInfo)
-   end do ! while ( .not. DLS_Terminated(jInfo) )
-   call DLS_EndLoop (jInfo, jIters, jTime)
-
- where:
-
-   DLS_GroupSetup (MPI_COMM_WORLD, coordinator, jInfo, iInfo)
-      Splits MPI_COMM_WORLD into non-overlapping "iComm"s and
-      a "jComm" comprised of the "coordinator" and the
-      foremen (rank 0 of the iComms).  Similar to DLS_Setup(), 
-      DLS_GroupSetup() initializes load balancing environments 
-      in "jComm" and "iComm", keeping the data in "jInfo" and 
-      "iInfo" respectively. Graphically:
-
-
- Authors:
- =======
-[1] Ali Mohammed
-
-[2] Florina M. Ciorba
-
-[3] Ricolindo L. Carino
-
-[4] Ioana Banicescu
-
-
-Publications:
-============
-[1] Ali Mohammed, Ahmed Eleliemy, Florina M. Ciorba, Franziska Kasielke, Ioana Banicescu, “An Approach for Realistically Simulating the Performance of Scientific Applications on High Performance Computing Systems”, Future Generation Computer Systems (FGCS), 2019, https://doi.org/10.1016/j.future.2019.10.007 (Open Access)
-
-[2]  Ali Mohammed and Florina M. Ciorba, “SimAS: A simulation-assisted approach for the scheduling algorithm selection under perturbations”, In Concurrency and Computation: Practice and Experience (CPE), 2020, https://onlinelibrary.wiley.com /doi/full/10.1002/cpe.5648 (Open Access)
-
-[3] Ricolindo L. Cariño and Ioana Banicescu. A Tool for a Two-level Dynamic Load Balancing Strategy in Scientific Applications. Scalable Computing: Practice and Experience, 8(3), 2007.
-
+This branch provides the python interface of the library.  The interface relies on mpi4py. So you needd to install it before using this interface. 
+Example of how one can use the library can be found in parallelpyth.py. This code shows an example of the Mandelbrot kernel written with the python interface of the library
+For more details one can read the following report
+A. Mendhe, "Dynamic loop self-scheduling on distributed-memory systems with Python", University of Basel, October 2021
+https://hpc.dmi.unibas.ch/en/scientific_output/completed_theses_and_projects/
+In general one can do the following
+```
+from mpi4py import MPI
+import DLS as cdls
+cdls.infoDLS(..) #here one should pass all the configuration parameters to the library, e.g., comm_world, size, rank, startloop_index, number of iterations, master, scheduling method, ...
+cdls.StartLoop(info)
+while(not cdls.DLS_Terminated(info)):
+    start, chunks = cdls.DLS_StartChunk(info)
+    if start < (start+chunks):
+      \\do something
+    cdls.DLS_EndChunk(info)    
+cdls.DLS_EndLoop(info) 
+}
+```
+Please be aware that this branch is still under development and the authors of this extension are Abhilash Mendhe, Ahmed Eleliemy, and Florina M. Ciorba.
+For bugs, we encourage everyone to create issues on the repository.
+For further questions, please contact ahmed.eleliemy@unibas.ch or florina.ciorba@unibas.ch
